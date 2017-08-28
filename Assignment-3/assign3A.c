@@ -12,7 +12,16 @@ int n,i;
 
 //function to recursively find the median of the array
 int findMedian(int arr[],int start,int end,int index){
-	int randomIndex = (start+end)/2;
+	
+	int randomIndex;
+
+	if (end-start)
+	{
+		randomIndex = (rand()%(end-start))+start;
+	}else{
+		randomIndex = (start + end)/2;
+	}
+	
 	int *part1,*part2;
 	part1 = (int*)malloc((end-start+1)*sizeof(int));
 	part2 = (int*)malloc((end-start+1)*sizeof(int));
