@@ -3,7 +3,6 @@
 	Name- Saurav Roll-1601CS41
 	The aim of this program is to analyze the performance of the quicksort algorithm using various partitioning techniques.
 */
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
@@ -12,15 +11,15 @@
 #define MAX 1000000000
 
 //global variables
-int n,k,i,*array;
+int n,power,i;
+long *array;
 clock_t c1,c2;
 double value;
-FILE *fptr;
 
 //utility to print the array
 void printArray(){
 	for(i=0;i<n;i++){
-		printf("%d ",array[i]);
+		printf("%ld ",array[i]);
 	}
 	printf("\n");
 }
@@ -53,15 +52,16 @@ int median(int r, int s, int t){
 			}
 		}
 	}
-	
+
 	return arr[1];
 }
 
 //function to swap two elements of the array.
-void swap(int j, int k){
-	int temp = array[k];
-	array[k]=array[j];
-	array[j] = temp;
+void swap(long* a, long* b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
 //Function to partition the array around a pivot.
@@ -72,41 +72,62 @@ int partition(int start,int end,int pivotType){
 	//determining the value of the pivot according to pivotType
 	switch(pivotType){
 		case 0:
-			pivot = start;
+			pivot = array[start];
+			random = start;
 			break;
 		
 		case 1:
-			pivot= start + rand() % (end - start + 1);
+			random= start + rand() % (end - start + 1);
+			pivot = array[random];
 			break;
 		
 		case 2:
 			r = start;
-		 	s = (end-start+1)/2;
-			t = end-start;
+		 	s = start + (end-start+1)/2;
+			t = end;
 			
-			pivot = median(r,s,t);
+			pivot = median(array[r],array[s],array[t]);
+			if (pivot == array[r])
+			{
+				random = r;
+			}else if (pivot == array[s])
+			{
+				random = s;
+			}else{
+				random = t;
+			}
 			break;
 		
 		case 3:
-			r = (end-start+1)/4;
-		 	s = (end-start+1)/2;
-			t = 3*(end-start+1)/4;
+			r = start+ (end-start+1)/4;
+		 	s = start + (end-start+1)/2;
+			t = start + 3*(end-start+1)/4;
 			
-			pivot = median(r,s,t);
+			pivot = median(array[r],array[s],array[t]);
+			if (pivot == array[r])
+			{
+				random = r;
+			}else if (pivot == array[s])
+			{
+				random = s;
+			}else{
+				random = t;
+			}
 			break;
 	}
 		
-		swap(pivot,end);
-		
-		int k = start-1,j;
-		for(j=start;j<end;j++){
-			if(array[j] <= pivot){
-				k++;
-				swap(k,j);
-			}
+	swap(array+random,array+end);
+	
+	//finding the right position of pivot.
+	int k = start-1,j;
+	for(j=start;j< end;j++){
+		if(array[j] <= pivot){
+			k++;
+			swap(array+k,array+j);
 		}
-		swap(k+1,end);
-		return k+1;
+	}
+	swap(array+k+1,array+end);
+	return k+1;
 }
 
 //function to sort the array using quicksort
@@ -126,11 +147,11 @@ void quickSort(int start , int end, int pivotType){
 void swapFewElements(){
 	
 	int p,q,j;
-	for(j=0;j<50;j++){
+	for(j=0;j<100;j++){
 		p = rand() %n;
 		q = rand() %n;
 	
-		swap(p,q);
+		swap(array+p,array+q);
 	}
 	
 }
@@ -141,33 +162,25 @@ int main(){
 
 	srand((unsigned int)time(NULL));
 	
-	fptr = fopen("Assign5A.txt", "w");
-	if(fptr==NULL){
-		printf("Error opening the file\n");
-		exit(1);
-	}
 	
 	//formatting for the output
-	k=4;
+	power=4;
 	n = 1000;
 	printf("--------------------------Performance of Quick-Sort-------------------------\n");
 	printf("----------------------------------------------------------------------------\n\n");
 	printf("N\t   Pivot-type\t\tRandom\tSorted\tAlmost-sorted\n");
-	fprintf(fptr,"--------------------------Performance of Quick-Sort-------------------------\n");
-	fprintf(fptr,"----------------------------------------------------------------------------\n\n");
-	fprintf(fptr,"N\t   Pivot-type\t\tRandom\tSorted\tAlmost-sorted\n");
-	
+
 	//running for each value of k
-	while(k<=7){
+	while(power<=7){
 	
 		//allocating space for the array.
 		n*=10;
-		array = (int*)malloc(n*sizeof(int));
+		array = (long*)malloc(n*sizeof(long));
 	
 		//run quicksort for each pivotType
 		int z;
 		for(z=0;z<4;z++){
-		
+			
 			//populating with random values
 			populateValues();
 			
@@ -180,16 +193,12 @@ int main(){
 			//formatting
 			if(z==0){
 				printf("%d\t     FIRST\t\t%.3f\t",n,value);
-				fprintf(fptr,"%d\t     FIRST\t\t%.3f\t",n,value);
 			}else if(z==1){
 				printf("%d\t     RANDOM\t\t%.3f\t",n,value);
-				fprintf(fptr,"%d\t     RANDOM\t\t%.3f\t",n,value);
 			}else if(z==2){
 				printf("%d\tMEDIAN OF THREE 1\t%.3f\t",n,value);
-				fprintf(fptr,"%d\tMEDIAN OF THREE 1\t%.3f\t",n,value);
 			}else{
 				printf("%d\tMEDIAN OF THREE 2\t%.3f\t",n,value);
-				fprintf(fptr,"%d\tMEDIAN OF THREE 2\t%.3f\t",n,value);
 			}
 			//applying it on the already sorted array.
 			c1 = clock();
@@ -198,7 +207,6 @@ int main(){
 			value = (double)(c2-c1)/(double)CLOCKS_PER_SEC;
 			
 			printf(" %.3f\t",value);
-			fprintf(fptr," %.3f\t",value);
 			
 			swapFewElements();
 			
@@ -209,16 +217,16 @@ int main(){
 			value = (double)(c2-c1)/(double)CLOCKS_PER_SEC;
 			
 			printf(" %.3f\n",value);
-			fprintf(fptr," %.3f\n",value);
+
+
 		}
+		//free the memory used.
+		free(array);
 		
-		
-		k++;
+		power++;
 		printf("\n");
-		fprintf(fptr,"\n");
 	}
 	
-	fclose(fptr);
 	
 	return 0;
 }
