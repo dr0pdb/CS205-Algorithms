@@ -201,12 +201,25 @@ int main(){
 				printf("%d\tMEDIAN OF THREE 2\t%.3f\t",n,value);
 			}
 			//applying it on the already sorted array.
-			c1 = clock();
-			quickSort(0,n-1,z);
-			c2 = clock();
-			value = (double)(c2-c1)/(double)CLOCKS_PER_SEC;
+			if (power<=5)
+			{
+				c1 = clock();
+				quickSort(0,n-1,z);
+				c2 = clock();
+				value = (double)(c2-c1)/(double)CLOCKS_PER_SEC;
+				
+				printf(" %.3f\t",value);
+			}else if(z!=0){
+				c1 = clock();
+				quickSort(0,n-1,z);
+				c2 = clock();
+				value = (double)(c2-c1)/(double)CLOCKS_PER_SEC;
+				
+				printf(" %.3f\t",value);
+			}else{
+				printf(" TOO SLOW\t");
+			}
 			
-			printf(" %.3f\t",value);
 			
 			swapFewElements();
 			
