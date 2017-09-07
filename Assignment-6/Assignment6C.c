@@ -7,69 +7,115 @@
 #include<stdlib.h>
 
 #define INF 1000000000
-int n,*arr,pathValue;
+#define MIN2(a,b) (a)<(b)?(a):(b)
+int n,*arr;
 
 //function to calculate the minimum difference.
-int minDiff(){
+void minDiff(){
 	int sum=0,i;
 	for (i = 0; i < n; ++i)
 	{
 		sum+=arr[i];
 	}
 
-	short int dp[n+1][sum+1];
-
-	for (i = 0; i <=n; ++i)
+	//the dp table and the parent info
+	short int dp[sum+1];
+	int parent[sum+1];
+	int counter[sum+1];
+	
+	//initialising the dp table
+	for (i = 0; i <= sum; ++i)
 	{
-		dp[i][0]=1;
+		dp[i]=-1;
+		parent[i]=-1;
+		counter[i]=0;
 	}
 
-	for (i = 1; i <=sum; ++i)
+	//counting the number of each value
+	for (i = 0; i < n; ++i)
 	{
-		dp[0][i]=0;
+		counter[arr[i]]++;
 	}
 
-    for (i=1; i<=n; i++)
-    {	int j;
-        for (j=1; j<=sum; j++)
-        {
-            dp[i][j] = dp[i-1][j];
+	//base case
+	dp[0]=1;
+	int indices[sum+1];
 
-            if (arr[i-1] <= j){
-                dp[i][j] |= dp[i-1][j-arr[i-1]];
-            }
-        }
-    }
-    int j,ans=INF;
-    for (j = sum/2; j >=0; j--)
-    {
-    	if (dp[n][j]==1)
-    	{
-    		ans = sum-(2*j);
-    		break;
-    	}
-    }
-    return ans;
+	int index=0;
+
+	//gettting the all possible subset sum
+	for (i = 0; i < n; ++i)
+	{
+		int j;
+		for (j = 0; j <=sum; ++j)
+		{
+			if(dp[j]!=1 && j-arr[i]>=0 && dp[j-arr[i]]==1){
+				indices[index++]=j;
+				parent[j]=arr[i];
+			}
+		}
+		for (j = 0; j < index; ++j)
+		{
+			dp[indices[j]]=1;
+		}
+	}
+	
+	//getting the min difference
+	int ans=INF,minIndex;
+	for (i = 1; i <= sum; ++i)
+	{
+		if (dp[i]==1 && ans>abs(sum-(2*i)))
+		{
+			ans = abs(sum-(2*i));
+			minIndex=i;
+		}
+	}
+	//printing the result
+	printf("The minimum difference possible is %d\n",ans);
+
+	//printing the first set
+	printf("First set: { ");
+	index = minIndex;
+	int used[n];
+	for (i = 0; i < n; ++i)
+	{
+		used[i]=0;
+	}
+	while(parent[index]>0){
+		printf("%d ",parent[index]);
+		counter[parent[index]]--;
+		index-=parent[index];
+	}
+	//printing the second set.
+	printf("} Second set: { ");
+	for (i = 0; i < sum+1; ++i)
+	{
+		while(counter[i]){
+			printf("%d ",i);
+			counter[i]--;
+		}
+	}
+	printf("}\n");
 }
 
 //the main function
 int main(int argc, char const *argv[])
 {
-	printf("Enter the number of elements in the array: \n");
+	//getting the input.
+	printf("Enter the number of elements in the array: ");
 	scanf("%d",&n);
 
 	arr = (int*)malloc(n*sizeof(int));
-	printf("Enter the elements one by one: \n");
+	printf("Enter the elements one by one: ");
 	
+	//getting the coin values
 	int i;
 	for (i = 0; i < n; ++i)
 	{
 		scanf("%d",arr+i);
 	}
-
-	int diff = minDiff();
-	printf("The minimum difference possible is %d\n",diff);
-	printf("First set: ");
+	//calculating the result
+	minDiff();
 	
 	return 0;
 }
