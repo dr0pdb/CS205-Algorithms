@@ -1,0 +1,75 @@
+/*
+	Name - Saurav Roll-1601CS41.
+	The aim of this program is to find and print the most reliable path between two given vertices.
+*/
+
+#include<stdio.h>
+#include<stdlib.h>
+
+int size[400]={0};
+int adjlist[400][400];
+double dist[400][400];
+double path[400]={-1e9};
+int p[400];
+
+
+// int p[200010],ranks[200010];
+// //if it is the representative then return itself otherwise return parent of it's immediate parent
+// int findSet(int i){
+// 	return (p[i]==i)? i : p[i]=findSet(p[i]);
+// }
+
+// bool isSameSet(int i, int j){
+// 	return findSet(i) == findSet(j);
+// }
+
+// void join(int i, int j){
+// 	if (!isSameSet(i,j))
+// 	{
+// 		int x = findSet(i),y = findSet(j);
+// 		if(ranks[x] > ranks[y]){
+// 			p[y] = x;
+// 		}else{
+// 			p[x] = y;
+// 			if (ranks[x] == ranks[y])
+// 			{
+// 				ranks[y]++;
+// 			}
+// 		}
+// 	}
+// }
+
+
+
+int cost(char s[],int size){
+	int cos = 0;
+	int i;
+	for (i = 0; i < size; ++i)
+	{
+		if (s[i]>='A' && s[i]<='Z')
+		{
+			cos+=s[i]-'A';
+		}else{
+			cos+=s[i]-'a';
+		}
+	}
+
+	return cos;
+}
+
+//checks if their is an edge from a to b.
+int checkNeighbour(char a[] , int size1, char b[], int size2){
+	int i,counta[26]={0},countb[26]={0};
+	
+	for(i=1;i<size1;i++){
+		if()
+	}
+}
+
+int main()
+{
+	
+
+	
+	return 0;
+}
