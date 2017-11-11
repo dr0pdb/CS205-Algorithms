@@ -50,34 +50,20 @@ int vertexWeight(int a){
 
 //checks whether an edge exists between two words.
 int checkEdge(int a, int b){
-	int cone[26]={0},ctwo[26]={0};
-
+	int counter = 0;
 	int i;
-	for (i = 0; i < 5; ++i)
-	{
-		cone[names[a][i]-'a']++;
-	}
-
-	for (i = 0; i < 5; ++i)
-	{
-		cone[names[b][i]-'a']--;
-	}
-
-	int diff = 0;
-	for (i = 0; i < 26; ++i)
-	{
-		if (cone[i]!=0)
-		{
-			diff++;
+	for(i=0;i<5;i++){
+		if(names[a][i] != names[b][i]){
+			counter++;
 		}
 	}
-
-	return (diff<=2);
+	
+	return counter==1;
 }
 
 //check if b can open a's account
 int check(int a, int b){
-	if (dist[a][b]>threshold)
+	if (dist[a][b]>=threshold)
 	{
 		return 0;
 	}
@@ -162,20 +148,15 @@ int main(int argc, char const *argv[])
     //printing the final result
     for (i = 0; i < v; ++i)
     {
-    	printf("Words that can access account of %s are: ",names[i]);
+    	printf("%s can access : %s ",names[i],names[i]);
+    	
     	int j;
-    	int flag = 0;
     	for (j = 0; j < v; ++j)
     	{
-    		if (j!=i && rechable[i][j])
+    		if (rechable[j][i])
     		{
     			printf(" %s ",names[j]);
-    			flag = 1;
     		}
-    	}
-    	if (!flag)
-    	{
-    		printf(" none ");
     	}
     	printf("\n");
     }
