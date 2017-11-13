@@ -157,7 +157,7 @@ void handleSpecialEdges(){
 	int i;
 	for (i = 0; i < v; ++i)
 	{
-		if(i==source) continue;
+		if(i==source || i==sink) continue;
 
 		if (!indeg[i])
 		{
@@ -170,7 +170,7 @@ void handleSpecialEdges(){
 	//for Thiruvananthapuram
 	for (i = 0; i < v; ++i)
 	{
-		if (i==sink)
+		if (i==sink || i==source)
 		{
 			continue;
 		}
